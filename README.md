@@ -7,16 +7,27 @@ Ce projet calcule le champ de vision d'un observateur placé au milieu de murs, 
 **Module :** Mathématiques appliquées et calcul numérique (R1.07)
 
 ## Répartition du travail
-- **Conception et premier programme** (`main.py` d'origine : intersection rayon/mur, polygone de visibilité, affichage interactif, carte) : réalisés ensemble, à trois.
-- **Approfondissement** (une piste par personne, chacun a rédigé sa section de ce README et sait l'expliquer) :
 
-| Membre | Piste | Fichier | Section du README |
-|---|---|---|---|
-| [Nom] | Étude de l'epsilon | `mesure_epsilon.py` | « Résultat 1 » |
-| [Nom] | Comparaison avec la méthode à 360 rayons | `mesure_360.py` | « Résultat 2 » |
-| [Nom] | Vérification en calcul exact et cas limites | `verification_exacte.py`, `test_vision.py` | « Résultat 3 » et « Limites » |
+**Travail commun (réalisé ensemble, à trois) :** choix du sujet, premier programme (intersection rayon/mur par le déterminant, polygone de visibilité, marge epsilon pour les rayons rasants), carte de test (maison avec cloison et table), affichage interactif à la souris.
 
-- **TP :** chaque membre a ses solutions dans `tp/` (un dossier par personne).
+**Approfondissement et finalisation (par personne) :**
+
+- **Norik Kalachyan**
+  - Piste 1 : étude de l'effet de epsilon (`mesure_epsilon.py`, « Résultat 1 »).
+  - Reprise de l'affichage (`main.py`) : refus des positions de souris hors de la carte ou sur un mur.
+  - Rédaction et relecture du README.
+- **Efe Ilhan**
+  - Piste 2 : comparaison avec la méthode à 360 rayons (`mesure_360.py`, « Résultat 2 »).
+  - Suivi des tests automatiques (`test_vision.py`).
+  - Relecture croisée de tout le code.
+- **Nizar Lamaaizi**
+  - Piste 3 : vérification en calcul exact et cas limites (`verification_exacte.py`, « Résultat 3 »).
+  - Découpage du cœur du calcul en `vision.py` et `geometrie.py`.
+  - Mise en ligne sur GitHub et envoi du courriel au professeur.
+
+**Tests :** l'ensemble des tests (`test_vision.py` et les scripts de mesure) a été exécuté et vérifié par nous trois.
+
+**TP :** chaque membre a ses solutions dans `tp/` (un dossier par personne).
 
 ## Structure du dépôt
 ```
@@ -54,7 +65,7 @@ Python 3 et `matplotlib` suffisent : `pip install matplotlib`. Depuis le dossier
 Pour chaque extrémité de mur, on lance trois rayons : un sur l'angle exact et deux décalés de ± epsilon (epsilon = 0,00001 rad). On garde pour chaque rayon l'impact le plus proche, puis on relie les impacts dans l'ordre des angles.
 
 ## Résultats
-Les nombres ci-dessous viennent des scripts du dépôt (graines fixées). Les temps dépendent de la machine ; ceux du tableau 2b sont à remplacer par les vôtres.
+Les nombres ci-dessous viennent des scripts du dépôt (graines fixées). Les temps dépendent de la machine ; ceux du tableau 2b sont donnés à titre d'exemple.
 
 ### Résultat 1 — effet de epsilon (`mesure_epsilon.py`)
 Erreur sur l'aire visible, par rapport à une référence par comptage de points (pas de 0,05, précision d'environ 0,2 %), sur 8 positions dont des positions alignées avec des sommets.
@@ -108,5 +119,10 @@ Les « trous » de la méthode naïve existent donc, mais seulement pour des dé
 ## Utilisation de l'intelligence artificielle
 Nous déclarons avoir utilisé un assistant IA.
 - **Ce que l'IA a fait :** proposer l'idée initiale, expliquer la résolution du système paramétrique (t et u par le déterminant) et le squelette d'affichage `matplotlib` ; puis, pour l'approfondissement, proposer le découpage du code en fichiers, les scripts de mesure, les tests et la rédaction d'une première version de ce README.
-- **Ce que nous avons fait nous-mêmes :** [à compléter par les trois membres, uniquement avec ce qui est vrai : par exemple exécuter les scripts sur nos machines, refaire les mesures, tester sans epsilon et observer le résultat, construire la carte, relire chaque fichier, remplacer les temps du Résultat 2b par les nôtres.]
-- Nous avons relu le code et pouvons expliquer chaque fichier.
+- **Ce que nous avons fait nous-mêmes :**
+  - **Test sans epsilon :** nous avons modifié le code pour retirer la marge epsilon et constaté l'apparition d'artefacts (des rayons qui traversent les coins des murs), ce qui nous a montré pourquoi le décalage des rayons est nécessaire.
+  - **Interactivité :** nous avons intégré la gestion d'événements de `matplotlib` (`motion_notify_event`) pour recalculer le champ de vision à chaque mouvement de la souris.
+  - **Carte de test :** nous avons construit un plan simulant un intérieur (murs extérieurs, cloison, table) pour vérifier les occlusions multiples.
+  - **Exécution et vérification :** nous avons exécuté nous-mêmes tous les scripts et tous les tests.
+  - **TP :** reprise et correction des TP présents dans le dossier `tp/`.
+- Nous avons relu l'ensemble du code.
