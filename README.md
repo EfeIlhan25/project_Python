@@ -1,43 +1,112 @@
-#  Calculateur de Ligne de Vue 2D (Raycasting Algorithmique)
+# Calculateur de ligne de vue 2D (raycasting)
 
-##  Présentation du projet
-Ce projet implémente un moteur de calcul de champ de vision (Ligne de Vue / Raycasting) en 2D. Inspiré des mécaniques de vision de jeux vidéo (comme *Project Zomboid*), l'algorithme calcule dynamiquement la zone visible par un observateur au milieu d'obstacles (murs), générant un polygone de visibilité.
+## Présentation du projet
+Ce projet calcule le champ de vision d'un observateur placé au milieu de murs, en 2D. Inspiré de la vision dans les jeux vidéo (comme *Project Zomboid*), il produit un **polygone de visibilité** : l'ensemble des points que l'observateur voit. Le calcul du cœur est fait à la main, sans bibliothèque géométrique. `matplotlib` ne sert qu'à l'affichage et aux graphiques.
 
-**Auteurs :** Efe Ilhan et Norik Kalachyan
-**Module :** Mathématiques appliquées et calcul numérique
+**Auteurs :** Efe Ilhan, Norik Kalachyan, Nizar Lamaaizi
+**Module :** Mathématiques appliquées et calcul numérique (R1.07)
 
-##  Structure du dépôt
-* `tp/` : Contient l'ensemble des solutions aux exercices de TP réalisés pendant le semestre.
-* `projet/` : Contient le code source de ce projet personnel.
+## Répartition du travail
+- **Conception et premier programme** (`main.py` d'origine : intersection rayon/mur, polygone de visibilité, affichage interactif, carte) : réalisés ensemble, à trois.
+- **Approfondissement** (une piste par personne, chacun a rédigé sa section de ce README et sait l'expliquer) :
 
-##  Comment lancer le projet
-1. Assurez-vous d'avoir un environnement Python 3 fonctionnel.
-2. Installez la bibliothèque d'affichage (si ce n'est pas déjà fait) : 
-   `pip install matplotlib`
-3. Exécutez le script principal depuis le dossier `projet/` : 
-   `python main.py` *(si votre fichier porte un autre nom, remplacez main.py)*
-4. **Ce qu'il faut observer :** Le programme affiche une carte 2D avec des murs noirs, la position du joueur en rouge, et le cône de vision calculé en jaune. Déplacez la souris sur la fenêtre pour voir le champ de vision se mettre à jour en temps réel.
+| Membre | Piste | Fichier | Section du README |
+|---|---|---|---|
+| [Nom] | Étude de l'epsilon | `mesure_epsilon.py` | « Résultat 1 » |
+| [Nom] | Comparaison avec la méthode à 360 rayons | `mesure_360.py` | « Résultat 2 » |
+| [Nom] | Vérification en calcul exact et cas limites | `verification_exacte.py`, `test_vision.py` | « Résultat 3 » et « Limites » |
 
-##  Notions mathématiques mobilisées
-Conformément aux attentes du module, ce projet n'utilise aucune bibliothèque géométrique externe pour le cœur du calcul (tout est fait à la main).
-* **Géométrie vectorielle et systèmes linéaires :** Le calcul de l'intersection entre un rayon de vision (demi-droite) et un obstacle (segment) se fait via la mise en équation paramétrique des deux éléments.
-* **Calcul matriciel (Déterminant) :** Utilisation du produit vectoriel 2D pour vérifier si le rayon et le mur sont parallèles, et pour résoudre le système.
-* **Arithmétique des flottants :** Résolution des erreurs de précision machine lors des calculs d'angles rasants.
+- **TP :** chaque membre a ses solutions dans `tp/` (un dossier par personne).
 
-##  Analyse critique et profondeur d'exploitation
+## Structure du dépôt
+```
+tp/                      solutions des TP (un dossier par membre)
+projet/
+  main.py                affichage interactif (souris)
+  vision.py              cœur du calcul : intersection, polygone de visibilité, méthode naïve
+  geometrie.py           aire d'un polygone, point dans un polygone (reprises des TP)
+  mesure_epsilon.py      piste 1
+  mesure_360.py          piste 2
+  verification_exacte.py piste 3
+  test_vision.py         tests automatiques
+  resultats/             tableaux (.csv) et graphiques (.png) produits par les scripts
+```
 
-**1. La limite de précision des nombres flottants (L'astuce de l'Epsilon)**
-Le défi principal de cet algorithme concerne la norme IEEE 754 des flottants. Lorsqu'un rayon frappe exactement l'extrémité d'un segment, les approximations d'arrondis rendent le résultat instable : le programme hésite et ne sait pas si le rayon traverse le mur ou est bloqué. 
-Pour stabiliser l'algorithme, nous avons implémenté une marge d'erreur infinitésimale (epsilon = 0.00001). Au lieu de lancer un seul rayon par sommet, le programme en lance trois : sur l'angle exact, légèrement à gauche (angle - epsilon), et légèrement à droite (angle + epsilon). Cela force mathématiquement le rayon décalé à "passer derrière" l'obstacle, générant une ombre correcte sans artefact visuel.
+## Comment lancer
+Python 3 et `matplotlib` suffisent : `pip install matplotlib`. Depuis le dossier `projet/` :
 
-**2. Optimisation géométrique vs Méthode naïve**
-La première approche envisagée (naïve) consistait à lancer 360 rayons autour de l'observateur (un par degré). Outre son inefficacité, elle causait des "trous" dans le champ de vision sur les murs éloignés à cause de l'écartement des rayons. L'implémentation finale est purement géométrique : l'algorithme repère les extrémités des murs et ne lance des rayons **que** vers ces points précis, garantissant une précision parfaite et une complexité réduite.
+| Commande | Effet |
+|---|---|
+| `python main.py` | ouvre la carte ; bouger la souris déplace l'observateur |
+| `python mesure_epsilon.py` | étude de epsilon (tableau + graphique) |
+| `python mesure_360.py` | comparaison avec 360 rayons (tableaux + graphique) |
+| `python verification_exacte.py` | vérification en calcul exact |
+| `python -m unittest test_vision -v` | lance les 16 tests |
 
-##  Utilisation de l'Intelligence Artificielle
-Dans le respect des consignes d'évaluation, nous déclarons avoir utilisé un assistant IA comme aide technique.
-* **Ce que l'IA a généré :** L'assistant a été utilisé pour nous proposer l'idée initiale, nous expliquer la méthode de résolution du système paramétrique (calcul de t et u via le déterminant), et fournir le squelette de base pour l'affichage avec matplotlib.
-* **Ce que nous avons réalisé, vérifié et analysé nous-mêmes :** 
-  * **L'analyse du problème des flottants :** Nous avons modifié le code pour tester l'algorithme sans la marge d'erreur (epsilon). Nous avons pu constater visuellement l'apparition d'artefacts (des rayons qui traversent les coins des murs). Cela nous a permis de vérifier par nous-mêmes comment la machine gère les arrondis (IEEE 754) et pourquoi le décalage mathématique des rayons était obligatoire pour obtenir un ombrage solide.
-  * **Implémentation de l'interactivité en temps réel :** Nous avons restructuré la fin du code pour intégrer la gestion d'événements de `matplotlib` (`motion_notify_event`). Nous avons créé une fonction de rafraîchissement qui recalcule le système d'équations paramétriques à chaque mouvement de la souris, transformant un simple graphique statique en un véritable prototype de mécanique de jeu.
-  * **Création d'une topologie de test complexe (Level Design) :** Nous avons remplacé les murs de base par un plan structuré simulant un intérieur de bâtiment (murs extérieurs, cloison, obstacle central type table). Cela nous a permis de vérifier que l'algorithme gère correctement les occlusions multiples (quand un mur en cache un autre situé derrière lui).
-  * La reprise complète et la correction des TP présents dans le dossier `tp/`.
+**Ce qu'il faut observer avec `main.py` :** des murs noirs, l'observateur en rouge et sa zone visible en jaune, mise à jour en temps réel. Quand la souris est hors de la carte ou sur un mur, le point devient gris et aucune zone n'est dessinée.
+
+## Notions du module mobilisées
+- **Géométrie du plan et déterminant (TP6)** : l'intersection d'un rayon et d'un mur résout un système linéaire 2×2 par le déterminant (produit vectoriel 2D). L'aire (formule du lacet) et le test « point dans un polygone » reprennent le TP6.
+- **Flottants (TP1)** : rayons rasants, tolérance sur le déterminant, comparaison au calcul exact avec `Fraction` (TP1 et TP4).
+- **Mesure du coût (TP2)** : temps d'exécution selon la taille de la carte.
+
+## Méthode
+Pour chaque extrémité de mur, on lance trois rayons : un sur l'angle exact et deux décalés de ± epsilon (epsilon = 0,00001 rad). On garde pour chaque rayon l'impact le plus proche, puis on relie les impacts dans l'ordre des angles.
+
+## Résultats
+Les nombres ci-dessous viennent des scripts du dépôt (graines fixées). Les temps dépendent de la machine ; ceux du tableau 2b sont à remplacer par les vôtres.
+
+### Résultat 1 — effet de epsilon (`mesure_epsilon.py`)
+Erreur sur l'aire visible, par rapport à une référence par comptage de points (pas de 0,05, précision d'environ 0,2 %), sur 8 positions dont des positions alignées avec des sommets.
+
+| epsilon (rad) | erreur moyenne | erreur maximale |
+|---|---|---|
+| 0 | 24,45 % | 72,14 % |
+| 1e-12 | 0,22 % | 0,64 % |
+| 1e-9 à 1e-5 | 0,22 % | 0,64 % |
+| 1e-4 | 0,22 % | 0,65 % |
+| 1e-3 | 0,26 % | 0,67 % |
+| 1e-2 | 0,63 % | 1,74 % |
+| 1e-1 | 3,83 % | 11,77 % |
+
+**Interprétation.** Sans epsilon le résultat est faux, car un rayon pile sur un coin touche les deux murs qui s'y rejoignent et ne « passe » d'aucun côté. Dès qu'epsilon est strictement positif, le résultat est stable sur un très large intervalle (de 1e-12 à 1e-4). Quand epsilon devient grand, les rayons décalés visent à côté du coin et l'erreur remonte.
+
+### Résultat 2 — notre méthode contre 360 rayons (`mesure_360.py`)
+**2a. Précision.** Sur la carte de la maison, les 360 rayons sont aussi précis que notre méthode (écarts d'environ 1 %). Il faut une carte particulière pour les mettre en défaut : une salle de 100×100 avec une cloison percée d'une fente de 0,52 de large, vue à 50 unités.
+
+| Méthode | Voit un point derrière la fente ? |
+|---|---|
+| Notre méthode | oui |
+| Naïve, 90, 180 ou 360 rayons | non |
+| Naïve, 720 rayons ou plus | oui |
+
+Les « trous » de la méthode naïve existent donc, mais seulement pour des détails plus fins que l'écart entre rayons.
+
+**2b. Temps.** Exemple de résultat (varie selon la machine) :
+
+| Murs | Notre méthode (ms) | Naïf 360 (ms) |
+|---|---|---|
+| 8 | 0,26 | 1,92 |
+| 24 | 1,87 | 4,50 |
+| 64 | 11,48 | 10,68 |
+| 124 | 24,45 | 11,88 |
+| 204 | 65,04 | 19,26 |
+
+**Interprétation.** Notre méthode lance 6 rayons par mur et teste chacun contre tous les murs : son coût croît comme le carré du nombre de murs. La méthode naïve lance un nombre fixe de rayons : son coût croît seulement avec le nombre de murs. Notre méthode est plus rapide sur de petites cartes (jusqu'à environ 60 murs ici) et plus lente au-delà. Elle n'est donc pas « de complexité réduite » en général.
+
+### Résultat 3 — calcul exact et cas limites (`verification_exacte.py`)
+- Sur 200 000 triplets de points presque alignés, le signe de l'orientation calculé en flottants diffère du signe exact (calculé avec `Fraction`) dans environ 14 % des cas. Dans presque tous ces cas, le flottant répond « alignés » (0) alors que l'exact trouve un petit écart ; il se trompe de côté seulement 12 fois sur 200 000.
+- Pour 10 positions de l'observateur, aucun sommet du polygone n'est invalidé par le test exact (aucun mur ne coupe le segment observateur → sommet).
+
+## Limites connues
+- epsilon est fixe, en radians : un écart en radians correspond à un décalage d'autant plus grand que le mur est loin.
+- Le coût est quadratique en nombre de murs (voir Résultat 2b) ; au-delà d'environ 60 murs, la méthode naïve est plus rapide.
+- Un observateur hors de la carte ou posé sur un mur est refusé (`observateur_valide`) ; sans ce test, la zone visible n'avait pas de sens.
+- La maison de la carte est fermée : l'extérieur n'est jamais visible depuis l'intérieur.
+- Le déterminant est comparé à une tolérance absolue (1e-8) pour détecter le parallélisme.
+
+## Utilisation de l'intelligence artificielle
+Nous déclarons avoir utilisé un assistant IA.
+- **Ce que l'IA a fait :** proposer l'idée initiale, expliquer la résolution du système paramétrique (t et u par le déterminant) et le squelette d'affichage `matplotlib` ; puis, pour l'approfondissement, proposer le découpage du code en fichiers, les scripts de mesure, les tests et la rédaction d'une première version de ce README.
+- **Ce que nous avons fait nous-mêmes :** [à compléter par les trois membres, uniquement avec ce qui est vrai : par exemple exécuter les scripts sur nos machines, refaire les mesures, tester sans epsilon et observer le résultat, construire la carte, relire chaque fichier, remplacer les temps du Résultat 2b par les nôtres.]
+- Nous avons relu le code et pouvons expliquer chaque fichier.
