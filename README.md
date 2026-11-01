@@ -27,7 +27,7 @@ Conformément aux attentes du module, ce projet n'utilise aucune bibliothèque g
 
 ## 🔬 Analyse critique et profondeur d'exploitation
 
-*(Note : Garde cette section, c'est elle qui rapporte les 6 points de "Profondeur d'exploitation". Modifie-la si tu as fait d'autres tests)*
+
 
 **1. La limite de précision des nombres flottants (L'astuce de l'Epsilon)**
 Le défi principal de cet algorithme concerne la norme IEEE 754 des flottants. Lorsqu'un rayon frappe exactement l'extrémité d'un segment, les approximations d'arrondis rendent le résultat instable : le programme hésite et ne sait pas si le rayon traverse le mur ou est bloqué. 
