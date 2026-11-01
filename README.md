@@ -3,8 +3,8 @@
 ## 📌 Présentation du projet
 Ce projet implémente un moteur de calcul de champ de vision (Ligne de Vue / Raycasting) en 2D. Inspiré des mécaniques de vision de jeux vidéo (comme *Project Zomboid*), l'algorithme calcule dynamiquement la zone visible par un observateur au milieu d'obstacles (murs), générant un polygone de visibilité.
 
-**membre :** [Efe Ilhan] [Kalachyan Norik] *(Ajouter les autres membres si travail en groupe et préciser qui a fait quoi)*
-**Groupe :** [Ton Groupe de TP]
+**membre :** [Efe Ilhan] [Kalachyan Norik] 
+
 **Module :** Mathématiques appliquées et calcul numérique
 
 ## 📁 Structure du dépôt
